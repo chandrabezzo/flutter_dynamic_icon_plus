@@ -37,7 +37,7 @@ class MyAppState extends State<MyApp> {
 
     FlutterDynamicIconPlus.alternateIconName.then((v) {
       setState(() {
-        currentIconName = v ?? "`primary`";
+        currentIconName = v ?? "default";
       });
     });
   }

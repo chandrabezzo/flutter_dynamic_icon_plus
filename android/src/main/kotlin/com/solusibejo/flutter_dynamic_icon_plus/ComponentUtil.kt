@@ -7,6 +7,8 @@ import android.content.pm.ComponentInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
+import java.util.Arrays
 
 
 object ComponentUtil {
@@ -38,30 +40,62 @@ object ComponentUtil {
         )
     }
 
-    fun enabledComponent(packageManager: PackageManager, packageName: String): ActivityInfo? {
-        val packageInfo = packageInfo(
-            packageManager,
-            packageName,
-            PackageManager.GET_ACTIVITIES or PackageManager.GET_DISABLED_COMPONENTS
-        )
-        return packageInfo.activities.find { it.isEnabled }
+    fun packageInfo(context: Context): PackageInfo {
+        val packageManager = context.packageManager
+        val packageName = context.packageName
+        val component = PackageManager.GET_ACTIVITIES or PackageManager.GET_DISABLED_COMPONENTS
+
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(
+                component.toLong()))
+        } else {
+            @Suppress("DEPRECATION") packageManager.getPackageInfo(packageName,
+                component
+            )
+        }
     }
 
-    fun isComponentEnabled(pm: PackageManager, pkgName: String?, clsName: String): Boolean {
+    fun getCurrentEnabledAlias(context: Context): ActivityInfo? {
+        val packageManager = context.packageManager
+        val packageName = context.packageName
+        return try {
+            val info = packageInfo(context)
+
+            var enabled: ActivityInfo? = null
+            for (activityInfo in info.activities) {
+                // Only checks among the `activity-alias`s, for current enabled alias
+                if (activityInfo.targetActivity != null) {
+                    val isEnabled: Boolean =
+                        isComponentEnabled(context, packageManager, packageName, activityInfo.name)
+                    if (isEnabled) enabled = activityInfo
+                }
+            }
+            enabled
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun isComponentEnabled(context: Context, pm: PackageManager, pkgName: String?, clsName: String): Boolean {
         val componentName = ComponentName(pkgName!!, clsName)
         return when (pm.getComponentEnabledSetting(componentName)) {
             PackageManager.COMPONENT_ENABLED_STATE_DISABLED -> false
             PackageManager.COMPONENT_ENABLED_STATE_ENABLED -> true
-            PackageManager.COMPONENT_ENABLED_STATE_DEFAULT ->       // We need to get the application info to get the component's default state
+            PackageManager.COMPONENT_ENABLED_STATE_DEFAULT ->                 // We need to get the application info to get the component's default state
                 try {
-                    val packageInfo = packageInfo(pm, pkgName, PackageManager.GET_ACTIVITIES)
+                    val packageInfo = packageInfo(context)
                     val components = ArrayList<ComponentInfo>()
-                    if (packageInfo.activities != null) components.addAll(packageInfo.activities)
+                    if (packageInfo.activities != null) {
+                        components.addAll(packageInfo.activities)
+                    }
+
                     for (componentInfo in components) {
                         if (componentInfo.name == clsName) {
                             return componentInfo.isEnabled
                         }
                     }
+
                     // the component is not declared in the AndroidManifest
                     false
                 } catch (e: PackageManager.NameNotFoundException) {
@@ -70,9 +104,11 @@ object ComponentUtil {
                 }
 
             else -> try {
-                val packageInfo = packageInfo(pm, pkgName, PackageManager.GET_ACTIVITIES)
+                val packageInfo = packageInfo(context)
                 val components = ArrayList<ComponentInfo>()
-                if (packageInfo.activities != null) components.addAll(packageInfo.activities)
+                if (packageInfo.activities != null) {
+                    components.addAll(packageInfo.activities)
+                }
                 for (componentInfo in components) {
                     if (componentInfo.name == clsName) {
                         return componentInfo.isEnabled
@@ -85,14 +121,32 @@ object ComponentUtil {
         }
     }
 
-    fun packageInfo(packageManager: PackageManager, packageName: String, component: Int): PackageInfo {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(
-                component.toLong()))
-        } else {
-            @Suppress("DEPRECATION") packageManager.getPackageInfo(packageName,
-                component
-            )
+    fun getComponentNames(context: Context, activityName: String?): List<ComponentName> {
+        val packageName = context.packageName
+        if (activityName == null) {
+            val pm = context.packageManager
+            val components = ArrayList<ComponentName>()
+            try {
+                val info = pm.getPackageInfo(
+                    packageName,
+                    PackageManager.GET_ACTIVITIES or PackageManager.GET_DISABLED_COMPONENTS
+                )
+                for (activityInfo in info.activities) {
+                    Log.d("getComponentNames", activityInfo.name.toString())
+                    if (activityInfo.targetActivity == null) {
+                        components.add(ComponentName(packageName, activityInfo.name))
+                    }
+                }
+            } catch (e: PackageManager.NameNotFoundException) {
+                // the package isn't installed on the device
+                Log.d("getComponentNames", "the package isn't installed on the device")
+            }
+            return components
         }
+        val componentName = String.format("%s.%s", packageName, activityName)
+        val component = ComponentName(packageName, componentName)
+        val components = ArrayList<ComponentName>()
+        components.add(component)
+        return components
     }
 }
