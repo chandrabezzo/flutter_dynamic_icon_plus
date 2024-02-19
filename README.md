@@ -6,6 +6,10 @@ A flutter plugin for dynamically changing app icon and app icon batch number (iO
 
 To use this plugin, add `flutter_dynamic_icon_plus` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
 
+## Known Issue
+
+When you launch your app then change to alternate icon and stop debugging, you can’t directly run again the application from code/ This issue related to [#38965](https://github.com/flutter/flutter/issues/38965)
+
 ## Getting Started
 Check out the `example` directory for a sample app using `flutter_dynamic_icon_plus`.
 
