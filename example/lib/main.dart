@@ -48,7 +48,7 @@ class MyAppState extends State<MyApp> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: const Text('Dynamic App Icon'),
+        title: const Text('Dynamic App Icon Plus'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 28),

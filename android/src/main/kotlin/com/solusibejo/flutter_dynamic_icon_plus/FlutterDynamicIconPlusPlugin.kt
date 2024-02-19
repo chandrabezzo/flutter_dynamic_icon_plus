@@ -2,6 +2,7 @@ package com.solusibejo.flutter_dynamic_icon_plus
 
 import android.app.Activity
 import android.content.ComponentName
+import android.content.Intent
 import android.util.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -33,7 +34,6 @@ class FlutterDynamicIconPlusPlugin: FlutterPlugin, MethodCallHandler, ActivityAw
           val packageManager = activity!!.packageManager
           val packageName = activity!!.packageName
           val iconName = call.argument<String?>(Arguments.iconName)
-          val default = "MainActivity"
           val currentlyEnabled = ComponentUtil.getCurrentEnabledAlias(activity!!)
 
           if (currentlyEnabled == null && iconName == null) {
@@ -69,6 +69,12 @@ class FlutterDynamicIconPlusPlugin: FlutterPlugin, MethodCallHandler, ActivityAw
           for (toDisable in componentsToDisable) {
             ComponentUtil.disable(activity!!, packageManager, toDisable.className)
           }
+
+          activity?.finish()
+          val intent = packageManager.getLaunchIntentForPackage(packageName);
+          intent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+          activity?.startActivity(intent);
+
           result.success(true)
         }
         else {

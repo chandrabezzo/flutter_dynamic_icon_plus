@@ -1,4 +1,6 @@
 import 'flutter_dynamic_icon_plus_platform_interface.dart';
+export 'src/consts/arguments.dart';
+export 'src/consts/method_names.dart';
 
 class FlutterDynamicIconPlus {
   static Future<bool> get supportsAlternateIcons async =>

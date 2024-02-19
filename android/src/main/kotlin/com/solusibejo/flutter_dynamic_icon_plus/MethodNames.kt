@@ -1,7 +1,7 @@
 package com.solusibejo.flutter_dynamic_icon_plus
 
 object MethodNames {
-    val supportsAlternateIcons = "supportsAlternateIcons"
-    val getAlternateIconName = "getAlternateIconName"
-    val setAlternateIconName = "setAlternateIconName"
+    const val supportsAlternateIcons = "supportsAlternateIcons"
+    const val getAlternateIconName = "getAlternateIconName"
+    const val setAlternateIconName = "setAlternateIconName"
 }
