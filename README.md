@@ -17,8 +17,8 @@ Check out the `example` directory for a sample app using `flutter_dynamic_icon_p
 #### Setup Manifest
 Update `android/src/main/AndroidManifest.xml` as follows:
     ```xml
+    
     <application ...>
-
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
