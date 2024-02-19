@@ -166,14 +166,11 @@ class MyAppState extends State<MyApp> {
                         content: Text("App icon change successful"),
                       ));
                     }
-                    setState(() {
-                      currentIconName = "chills";
+                    FlutterDynamicIconPlus.alternateIconName.then((v) {
+                      setState(() {
+                        currentIconName = v ?? "`primary`";
+                      });
                     });
-                    // FlutterDynamicIconPlus.alternateIconName.then((v) {
-                    //   setState(() {
-                    //     currentIconName = v ?? "`primary`";
-                    //   });
-                    // });
                     return;
                   }
                 } catch (_) {
