@@ -271,6 +271,15 @@ if (Platform.isIOS) {
 }
 ```
 
+### Available methods
+Method | Type | Description
+------------ | ------------- | -------------
+**supportsAlternateIcons** | bool | To check this app support alternate app icons or not
+**alternateIconName** | String | To get currently active app icon 
+**setAlternateIconName(iconName)** | Nullable String | To update app icon, set iconName with specific value. To restore default app icon fill with null.
+**applicationIconBadgeNumber** | int | To get app icon badge, number of push notification received. This method just work on iOS only.
+**setApplicationIconBadgeNumber(batchIconNumber)** | int | To set app icon badge.
+
 Check out the `example` app for more details
 
 ## Screenrecord
