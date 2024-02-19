@@ -1,5 +1,5 @@
 name: flutter_dynamic_icon_plus
-description: "A new Flutter project."
+description: "A flutter plugin for dynamically changing app icon, support IOS version > 10.3 and Android"
 version: 1.0.0
 homepage: https://github.com/chandrabezzo/flutter_dynamic_icon_plus
 repository: https://github.com/chandrabezzo/flutter_dynamic_icon_plus
