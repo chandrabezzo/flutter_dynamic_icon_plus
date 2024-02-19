@@ -8,7 +8,7 @@ To use this plugin, add `flutter_dynamic_icon_plus` as a [dependency in your pub
 
 ## Known Issue
 
-When you launch your app then change to alternate icon and stop debugging, you can’t directly run again the application from code/ This issue related to [#38965](https://github.com/flutter/flutter/issues/38965)
+When you launch your app then change to alternate icon and stop debugging, you can’t directly run again the application from code. This issue related to [#38965](https://github.com/flutter/flutter/issues/38965)
 
 ## Getting Started
 Check out the `example` directory for a sample app using `flutter_dynamic_icon_plus`.
@@ -275,11 +275,14 @@ Check out the `example` app for more details
 
 ## Screenrecord
 
-## Showing App Icon change
-![Screenrecording of the example](https://raw.githubusercontent.com/tastelessjolt/flutter_dynamic_icon/master/imgs/screen.gif)
+## Showing App Icon change Android
+https://github.com/chandrabezzo/flutter_dynamic_icon_plus/assets/16184998/f3623a54-12f8-4822-8e08-70be4b31efbb
+
+## Showing App Icon change iOS
+https://github.com/chandrabezzo/flutter_dynamic_icon_plus/assets/16184998/519e94a4-9643-462b-bb66-f92714e1c56e
 
 ## Showing Batch number on app icon change in SpringBoard
-![Screenrecording of the example](https://raw.githubusercontent.com/tastelessjolt/flutter_dynamic_icon/master/imgs/batch.gif)
+https://github.com/chandrabezzo/flutter_dynamic_icon_plus/assets/16184998/4d63a167-6905-4a1c-b8cf-049cc2f1d12d
 
 ## Reference 
 
