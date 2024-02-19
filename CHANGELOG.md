@@ -1,3 +1,3 @@
-## 0.0.1
+## 1.0.0 - February 19, 2024
 
-* TODO: Describe initial release.
+* Dynamic App Icon on Android and iOS
