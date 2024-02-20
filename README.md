@@ -14,7 +14,36 @@ When you launch your app then change to alternate icon and stop debugging, you c
 Check out the `example` directory for a sample app using `flutter_dynamic_icon_plus`.
 
 ### Android Integration
+#### Include applicationIdSuffix
+
+If your app contains applicationIdSuffix please add applicationId on your activity-alias name for example
+```xml
+
+	<activity-alias
+            android:label="Your app"
+            android:icon="@mipmap/ic_launcher_1"
+            android:roundIcon="@mipmap/ic_launcher_1"
+            android:name=".icon_1"
+            android:exported="true"
+            android:enabled="false"
+            android:targetActivity=".MainActivity">
+
+            <meta-data
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme"
+                />
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity-alias>
+
+```
+
 #### Setup Manifest
+
 Update `android/src/main/AndroidManifest.xml` as follows:
     ```xml
     
