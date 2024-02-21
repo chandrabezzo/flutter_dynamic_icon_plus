@@ -1,3 +1,7 @@
+## 1.1.2 - February 21, 2024
+
+* Update Readme
+
 ## 1.1.1 - February 21, 2024
 
 * To decrease bad experience user in Android, just change app icon on app closed via [Service](https://developer.android.com/develop/background-work/services)

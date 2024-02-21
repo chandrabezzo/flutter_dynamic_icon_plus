@@ -1,10 +1,8 @@
 package com.solusibejo.flutter_dynamic_icon_plus
 
 import android.app.Activity
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -41,8 +39,8 @@ class FlutterDynamicIconPlusPlugin: FlutterPlugin, MethodCallHandler, ActivityAw
 
           sp?.edit()?.putString(appIcon, iconName)?.apply()
 
-          val changeAppIconService = Intent(activity, ChangeAppIconService::class.java)
-          activity?.startService(changeAppIconService)
+          val flutterDynamicIconPlusService = Intent(activity, FlutterDynamicIconPlusService::class.java)
+          activity?.startService(flutterDynamicIconPlusService)
           result.success(true)
         }
         else {

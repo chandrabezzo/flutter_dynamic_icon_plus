@@ -5,7 +5,7 @@
         android:icon="@mipmap/ic_launcher">
 
         <service
-            android:name="com.solusibejo.flutter_dynamic_icon_plus.ChangeAppIconService"
+            android:name="com.solusibejo.flutter_dynamic_icon_plus.FlutterDynamicIconPlusService"
             android:stopWithTask="false"/>
 
         <activity

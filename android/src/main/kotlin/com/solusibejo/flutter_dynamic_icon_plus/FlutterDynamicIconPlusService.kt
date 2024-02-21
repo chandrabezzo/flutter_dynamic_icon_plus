@@ -7,7 +7,7 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 
-class ChangeAppIconService: Service() {
+class FlutterDynamicIconPlusService: Service() {
     override fun onBind(p0: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_NOT_STICKY

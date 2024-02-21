@@ -14,6 +14,20 @@ When you launch your app then change to alternate icon and stop debugging, you c
 Check out the `example` directory for a sample app using `flutter_dynamic_icon_plus`.
 
 ### Android Integration
+#### Add Service
+
+Add service under application in your manifest
+
+```xml
+    <application...>
+
+        <service
+            android:name="com.solusibejo.flutter_dynamic_icon_plus.FlutterDynamicIconPlusService"
+            android:stopWithTask="false"/>
+
+        <activity.../>
+```
+
 #### Include applicationIdSuffix
 
 If your app contains applicationIdSuffix please add applicationId on your activity-alias name for example
@@ -42,7 +56,7 @@ If your app contains applicationIdSuffix please add applicationId on your activi
 
 ```
 
-#### Setup Manifest
+#### Add Activity Alias
 
 Update `android/src/main/AndroidManifest.xml` as follows:
 
@@ -319,7 +333,7 @@ https://github.com/chandrabezzo/flutter_dynamic_icon_plus/assets/16184998/6644c2
 ## Showing App Icon change iOS
 https://github.com/chandrabezzo/flutter_dynamic_icon_plus/assets/16184998/519e94a4-9643-462b-bb66-f92714e1c56e
 
-## Showing Batch number on app icon change in SpringBoard
+## Showing Batch number on app icon
 https://github.com/chandrabezzo/flutter_dynamic_icon_plus/assets/16184998/4d63a167-6905-4a1c-b8cf-049cc2f1d12d
 
 ## Reference 
@@ -329,4 +343,5 @@ https://medium.com/ios-os-x-development/dynamically-change-the-app-icon-7d4bece8
 
 This plugin inspired from another existing plugin. I copy a lot of code from these plugin.
 https://pub.dev/packages/flutter_dynamic_icon
+
 https://pub.dev/packages/dynamic_icon_flutter
