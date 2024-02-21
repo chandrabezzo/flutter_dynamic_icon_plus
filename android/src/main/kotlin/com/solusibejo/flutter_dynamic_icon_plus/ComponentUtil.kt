@@ -131,7 +131,6 @@ object ComponentUtil {
                     PackageManager.GET_ACTIVITIES or PackageManager.GET_DISABLED_COMPONENTS
                 )
                 for (activityInfo in info.activities) {
-                    Log.d("getComponentNames", activityInfo.name.toString())
                     if (activityInfo.targetActivity == null) {
                         components.add(ComponentName(packageName, activityInfo.name))
                     }

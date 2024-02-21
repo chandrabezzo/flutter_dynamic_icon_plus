@@ -2,6 +2,7 @@ package com.solusibejo.flutter_dynamic_icon_plus
 
 import android.app.Activity
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -21,9 +22,13 @@ class FlutterDynamicIconPlusPlugin: FlutterPlugin, MethodCallHandler, ActivityAw
   /// when the Flutter Engine is detached from the Activity
   private lateinit var channel : MethodChannel
   private var activity: Activity? = null
+  companion object {
+    const val pluginName = "flutter_dynamic_icon_plus"
+    const val appIcon = "app_icon"
+  }
 
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_dynamic_icon_plus")
+    channel = MethodChannel(flutterPluginBinding.binaryMessenger, pluginName)
     channel.setMethodCallHandler(this)
   }
 
@@ -31,50 +36,13 @@ class FlutterDynamicIconPlusPlugin: FlutterPlugin, MethodCallHandler, ActivityAw
     when(call.method){
       MethodNames.setAlternateIconName -> {
         if(activity != null){
-          val packageManager = activity!!.packageManager
-          val packageName = activity!!.packageName
+          val sp = activity?.getSharedPreferences(pluginName, Context.MODE_PRIVATE)
           val iconName = call.argument<String?>(Arguments.iconName)
-          val currentlyEnabled = ComponentUtil.getCurrentEnabledAlias(activity!!)
 
-          if (currentlyEnabled == null && iconName == null) {
-            // Currently enabled and request to enable activities are both the default activities
-            result.success(true)
-          }
+          sp?.edit()?.putString(appIcon, iconName)?.apply()
 
-          val components: List<ComponentName> = ComponentUtil.getComponentNames(activity!!, iconName)
-          for (component in components) {
-            if (currentlyEnabled != null && currentlyEnabled.name.equals(component.className)) return
-            Log.d(
-              "setAlternateIconName",
-              String.format(
-                "Changing enabled activity-alias from %s to %s",
-                if (currentlyEnabled != null) currentlyEnabled.name else "default",
-                component.className
-              )
-            )
-            ComponentUtil.enable(activity!!, packageManager, component.className)
-          }
-
-          val componentsToDisable: List<ComponentName> = if (currentlyEnabled != null) {
-            listOf(
-              ComponentName(
-                packageName,
-                currentlyEnabled.name
-              )
-            )
-          } else {
-            ComponentUtil.getComponentNames(activity!!, null)
-          }
-
-          for (toDisable in componentsToDisable) {
-            ComponentUtil.disable(activity!!, packageManager, toDisable.className)
-          }
-
-          activity?.finish()
-          val intent = packageManager.getLaunchIntentForPackage(packageName);
-          intent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-          activity?.startActivity(intent);
-
+          val changeAppIconService = Intent(activity, ChangeAppIconService::class.java)
+          activity?.startService(changeAppIconService)
           result.success(true)
         }
         else {

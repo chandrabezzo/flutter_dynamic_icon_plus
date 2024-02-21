@@ -4,15 +4,9 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
-        <receiver
-            android:name="com.solusibejo.flutter_dynamic_icon_plus.IconChangeReceiver"
-            android:enabled="true"
-            android:exported="true">
-
-            <intent-filter>
-                <action android:name="com.solusibejo.flutter_dynamic_icon_plus_example.ACTION_CHANGE_ICON"/>
-            </intent-filter>
-        </receiver>
+        <service
+            android:name="com.solusibejo.flutter_dynamic_icon_plus.ChangeAppIconService"
+            android:stopWithTask="false"/>
 
         <activity
             android:name=".MainActivity"
