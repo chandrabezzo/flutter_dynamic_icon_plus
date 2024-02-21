@@ -24,34 +24,6 @@ Add service under application in your manifest
         <activity.../>
 ```
 
-#### Include applicationIdSuffix
-
-If your app contains applicationIdSuffix please add applicationId on your activity-alias name for example
-```xml
-
-	<activity-alias
-            android:label="Your app"
-            android:icon="@mipmap/ic_launcher_1"
-            android:roundIcon="@mipmap/ic_launcher_1"
-            android:name=".icon_1"
-            android:exported="true"
-            android:enabled="false"
-            android:targetActivity=".MainActivity">
-
-            <meta-data
-                android:name="io.flutter.embedding.android.NormalTheme"
-                android:resource="@style/NormalTheme"
-                />
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-        </activity-alias>
-
-```
-
 #### Add Activity Alias
 
 Update `android/src/main/AndroidManifest.xml` as follows:
@@ -124,28 +96,45 @@ Update `android/src/main/AndroidManifest.xml` as follows:
 
         </activity-alias>
     </application>
-    ```
+```
     
+#### Include applicationIdSuffix
+
+If your app contains applicationIdSuffix please add applicationId on your activity-alias name for example
+
+```xml
+	<activity-alias
+            android:label="Your app"
+            android:icon="@mipmap/ic_launcher_1"
+            android:roundIcon="@mipmap/ic_launcher_1"
+            android:name="${applicationId}.icon_1"
+            android:exported="true"
+            android:enabled="false"
+            android:targetActivity=".MainActivity">
+
+            <meta-data
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme"
+                />
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity-alias>
+
+```
+
 #### Known Issues
 
 * Each android version will have different behavior, with Android 8 it may take a few seconds before we can notice the change
-* Caution: Using this feature on some android versions will cause your app to crash (it will crash the first time you change the icon, next time it won't), it's a bad user experience that you have to crash the app to change the app icon, you can read more about this issue [here](https://github.com/tastelessjolt/flutter_dynamic_icon/pull/10#issuecomment-959260628)
-* Caution: Using this feature will close your app when change from default to alternate app icon. But, if you change between alternate app icon the app will restart automatically.
 * Due to Splash screen problems of newest Android versions, please consider to remove the below code in your activivy and activity-alias tags:
 ```
   <meta-data
                 android:name="io.flutter.embedding.android.SplashScreenDrawable"
                 android:resource="@drawable/launch_background"
                 />
-```
-* Add this code to your MainActivity.kt, in onCreate function:
-```
-	 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            // Disable the Android splash screen fade out animation to avoid
-            // a flicker before the si
-            milar frame is drawn in Flutter.
-            splashScreen.setOnExitAnimationListener { splashScreenView -> splashScreenView.remove() }
-        }
 ```
 
 ### iOS Integration
@@ -223,15 +212,6 @@ Here is my `Info.plist` after adding Alternate Icons
 				<key>UIPrerenderedIcon</key>
 				<false/>
 			</dict>
-		</dict>
-		<key>CFBundlePrimaryIcon</key>
-		<dict>
-			<key>CFBundleIconFiles</key>
-			<array>
-				<string>chills</string>
-			</array>
-			<key>UIPrerenderedIcon</key>
-			<false/>
 		</dict>
 	</dict>
 	<key>CFBundleIdentifier</key>
@@ -315,9 +295,9 @@ Method | Type | Description
 ------------ | ------------- | -------------
 **supportsAlternateIcons** | bool | To check this app support alternate app icons or not
 **alternateIconName** | String | To get currently active app icon 
-**setAlternateIconName(iconName)** | Nullable String | To update app icon, set iconName with specific value. To restore default app icon fill with null.
+**setAlternateIconName(iconName)** | Nullable String params | To update app icon, set iconName with specific value. To restore default app icon fill with null.
 **applicationIconBadgeNumber** | int | To get app icon badge, number of push notification received. This method just work on iOS only.
-**setApplicationIconBadgeNumber(batchIconNumber)** | int | To set app icon badge just work on iOS only.
+**setApplicationIconBadgeNumber(batchIconNumber)** | int params | To set app icon badge just work on iOS only.
 
 Check out the `example` app for more details
 
