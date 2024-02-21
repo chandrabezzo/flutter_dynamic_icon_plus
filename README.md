@@ -314,7 +314,7 @@ Check out the `example` app for more details
 ## Screenrecord
 
 ## Showing App Icon change Android
-https://github.com/chandrabezzo/flutter_dynamic_icon_plus/assets/16184998/f3623a54-12f8-4822-8e08-70be4b31efbb
+https://github.com/chandrabezzo/flutter_dynamic_icon_plus/assets/16184998/6644c2ca-9de3-4c75-b9c1-7e279022bc14
 
 ## Showing App Icon change iOS
 https://github.com/chandrabezzo/flutter_dynamic_icon_plus/assets/16184998/519e94a4-9643-462b-bb66-f92714e1c56e
