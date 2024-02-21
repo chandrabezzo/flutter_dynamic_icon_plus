@@ -45,8 +45,8 @@ If your app contains applicationIdSuffix please add applicationId on your activi
 #### Setup Manifest
 
 Update `android/src/main/AndroidManifest.xml` as follows:
-    ```xml
-    
+
+```xml
     <application ...>
         <activity
             android:name=".MainActivity"
