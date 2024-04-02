@@ -33,6 +33,8 @@ abstract class FlutterDynamicIconPlusPlatform extends PlatformInterface {
   Future<void> setAlternateIconName({
     String? iconName,
     List<String> blacklistBrands = const [],
+    List<String> blacklistManufactures = const [],
+    List<String> blacklistModels = const [],
   }) =>
       throw UnimplementedError(
           'setAlternateIconName(String? iconName) has not been implemented.');

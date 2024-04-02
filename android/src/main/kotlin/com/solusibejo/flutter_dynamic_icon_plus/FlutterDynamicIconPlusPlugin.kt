@@ -1,12 +1,9 @@
 package com.solusibejo.flutter_dynamic_icon_plus
 
 import android.app.Activity
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Build
-import android.os.IBinder
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -42,22 +39,12 @@ class FlutterDynamicIconPlusPlugin: FlutterPlugin, MethodCallHandler, ActivityAw
           val sp = activity?.getSharedPreferences(pluginName, Context.MODE_PRIVATE)
           val iconName = call.argument<String?>(Arguments.iconName)
           val brandsInString = call.argument<String?>(Arguments.brands)
-          val brands = brandsInString?.split(",")?.toList()
+          val manufacturesInString = call.argument<String?>(Arguments.manufactures)
+          val modelsInString = call.argument<String?>(Arguments.models)
 
           sp?.edit()?.putString(appIcon, iconName)?.apply()
 
-          val deviceBrand = Build.BRAND
-          var isBrandBlacklist = false
-          if (brands != null) {
-            for(brand in brands){
-              if(deviceBrand.equals(brand, ignoreCase = true)){
-                isBrandBlacklist = true
-                break
-              }
-            }
-          }
-
-          if(isBrandBlacklist){
+          if(containsOnBlacklist(brandsInString, manufacturesInString, modelsInString)){
             if(activity != null){
               ComponentUtil.changeAppIcon(activity!!, activity!!.packageManager, activity!!.packageName)
 
@@ -100,6 +87,41 @@ class FlutterDynamicIconPlusPlugin: FlutterPlugin, MethodCallHandler, ActivityAw
         result.notImplemented()
       }
     }
+  }
+
+  fun containsOnBlacklist(brandsInString: String?, manufacturesInString: String?, modelsInString: String?): Boolean {
+    val brands = brandsInString?.split(",")?.toList()
+    val manufactures = manufacturesInString?.split(',')?.toList()
+    val models = modelsInString?.split(',')?.toList()
+
+    val deviceBrand = Build.BRAND
+    val deviceManufacture = Build.MANUFACTURER
+    val deviceModel = Build.MODEL
+
+    if (brands != null) {
+      for(brand in brands){
+        if(deviceBrand.equals(brand, ignoreCase = true)){
+          return true
+        }
+      }
+    }
+
+    if(manufactures != null){
+      for(manufacture in manufactures){
+        if(deviceManufacture.equals(manufacture, ignoreCase = true)){
+          return true
+        }
+      }
+    }
+
+    if(models != null){
+      for(model in models){
+        if(deviceModel.equals(model, ignoreCase = true))
+          return true
+      }
+    }
+
+    return false
   }
 
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
