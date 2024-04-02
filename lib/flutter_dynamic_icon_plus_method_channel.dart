@@ -27,10 +27,24 @@ class MethodChannelFlutterDynamicIconPlus
   }
 
   @override
-  Future<void> setAlternateIconName(String? iconName) async {
+  Future<void> setAlternateIconName({
+    String? iconName,
+    List<String> blacklistBrands = const [],
+    List<String> blacklistManufactures = const [],
+    List<String> blacklistModels = const [],
+  }) async {
+    final brands = blacklistBrands.join(',');
+    final manufactures = blacklistManufactures.join(',');
+    final models = blacklistModels.join(',');
+
     await methodChannel.invokeMethod(
       MethodNames.setAlternateIconName,
-      {Arguments.iconName: iconName},
+      {
+        Arguments.iconName: iconName,
+        Arguments.brands: brands,
+        Arguments.manufactures: manufactures,
+        Arguments.models: models,
+      },
     );
   }
 

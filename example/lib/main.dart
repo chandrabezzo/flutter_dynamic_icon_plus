@@ -18,6 +18,7 @@ class MyAppState extends State<MyApp> {
   int batchIconNumber = 0;
 
   String currentIconName = "?";
+  final blacklistBrands = ['redmi'];
 
   bool loading = false;
   bool showAlert = true;
@@ -158,7 +159,10 @@ class MyAppState extends State<MyApp> {
               onPressed: () async {
                 try {
                   if (await FlutterDynamicIconPlus.supportsAlternateIcons) {
-                    await FlutterDynamicIconPlus.setAlternateIconName("chills");
+                    await FlutterDynamicIconPlus.setAlternateIconName(
+                      iconName: "chills",
+                      blacklistBrands: blacklistBrands,
+                    );
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).hideCurrentSnackBar();
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -190,7 +194,10 @@ class MyAppState extends State<MyApp> {
               onPressed: () async {
                 try {
                   if (await FlutterDynamicIconPlus.supportsAlternateIcons) {
-                    await FlutterDynamicIconPlus.setAlternateIconName("photos");
+                    await FlutterDynamicIconPlus.setAlternateIconName(
+                      iconName: 'photos',
+                      blacklistBrands: blacklistBrands,
+                    );
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).hideCurrentSnackBar();
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -227,7 +234,9 @@ class MyAppState extends State<MyApp> {
                       'Supports Alternate Icons: ${isSupport.toString()}');
                   if (isSupport) {
                     await FlutterDynamicIconPlus.setAlternateIconName(
-                        "teamfortress");
+                      iconName: 'teamfortress',
+                      blacklistBrands: blacklistBrands,
+                    );
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).hideCurrentSnackBar();
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -262,7 +271,10 @@ class MyAppState extends State<MyApp> {
               onPressed: () async {
                 try {
                   if (await FlutterDynamicIconPlus.supportsAlternateIcons) {
-                    await FlutterDynamicIconPlus.setAlternateIconName(null);
+                    await FlutterDynamicIconPlus.setAlternateIconName(
+                      iconName: null,
+                      blacklistBrands: blacklistBrands,
+                    );
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).hideCurrentSnackBar();
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
