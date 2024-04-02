@@ -147,4 +147,47 @@ object ComponentUtil {
         components.add(component)
         return components
     }
+
+    fun changeAppIcon(context: Context, packageManager: PackageManager, packageName: String){
+        val sp = context.getSharedPreferences(FlutterDynamicIconPlusPlugin.pluginName, Context.MODE_PRIVATE)
+        sp.getString(FlutterDynamicIconPlusPlugin.appIcon, null).let { name ->
+            val currentlyEnabled = getCurrentEnabledAlias(context)
+            if(currentlyEnabled?.name != name){
+                setupIcon(context, packageManager, packageName, name, currentlyEnabled?.name)
+            }
+        }
+    }
+
+    fun removeCurrentAppIcon(context: Context){
+        val sp = context.getSharedPreferences(FlutterDynamicIconPlusPlugin.pluginName, Context.MODE_PRIVATE)
+        sp.edit()?.remove(FlutterDynamicIconPlusPlugin.appIcon)?.apply()
+    }
+
+    fun setupIcon(context: Context, packageManager: PackageManager, packageName: String, newName: String?, currentlyName: String?){
+        val components: List<ComponentName> = getComponentNames(context, newName)
+
+        for (component in components) {
+            if (currentlyName != null && currentlyName == component.className) return
+            Log.d(
+                "setAlternateIconName",
+                String.format(
+                    "Changing enabled activity-alias from %s to %s",
+                    currentlyName ?: "default", component.className
+                )
+            )
+            enable(context, packageManager, component.className)
+        }
+
+        val componentsToDisable: List<ComponentName> = if (currentlyName != null) {
+            listOf(
+                ComponentName(packageName, currentlyName)
+            )
+        } else {
+            getComponentNames(context, null)
+        }
+
+        for (toDisable in componentsToDisable) {
+            disable(context, packageManager, toDisable.className)
+        }
+    }
 }

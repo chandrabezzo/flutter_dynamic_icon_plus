@@ -9,9 +9,15 @@ class FlutterDynamicIconPlus {
   static Future<String?> get alternateIconName async =>
       await FlutterDynamicIconPlusPlatform.instance.alternateIconName;
 
-  static Future<void> setAlternateIconName(String? iconName) async =>
-      await FlutterDynamicIconPlusPlatform.instance
-          .setAlternateIconName(iconName);
+  static Future<void> setAlternateIconName({
+    String? iconName,
+    List<String> blacklistBrands = const [],
+  }) async {
+    await FlutterDynamicIconPlusPlatform.instance.setAlternateIconName(
+      iconName: iconName,
+      blacklistBrands: blacklistBrands,
+    );
+  }
 
   static Future<int> get applicationIconBadgeNumber async =>
       await FlutterDynamicIconPlusPlatform.instance.applicationIconBadgeNumber;

@@ -1,8 +1,12 @@
 package com.solusibejo.flutter_dynamic_icon_plus
 
 import android.app.Activity
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
+import android.os.Build
+import android.os.IBinder
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -20,6 +24,7 @@ class FlutterDynamicIconPlusPlugin: FlutterPlugin, MethodCallHandler, ActivityAw
   /// when the Flutter Engine is detached from the Activity
   private lateinit var channel : MethodChannel
   private var activity: Activity? = null
+
   companion object {
     const val pluginName = "flutter_dynamic_icon_plus"
     const val appIcon = "app_icon"
@@ -36,11 +41,34 @@ class FlutterDynamicIconPlusPlugin: FlutterPlugin, MethodCallHandler, ActivityAw
         if(activity != null){
           val sp = activity?.getSharedPreferences(pluginName, Context.MODE_PRIVATE)
           val iconName = call.argument<String?>(Arguments.iconName)
+          val brandsInString = call.argument<String?>(Arguments.brands)
+          val brands = brandsInString?.split(",")?.toList()
 
           sp?.edit()?.putString(appIcon, iconName)?.apply()
 
-          val flutterDynamicIconPlusService = Intent(activity, FlutterDynamicIconPlusService::class.java)
-          activity?.startService(flutterDynamicIconPlusService)
+          val deviceBrand = Build.BRAND
+          var isBrandBlacklist = false
+          if (brands != null) {
+            for(brand in brands){
+              if(deviceBrand.equals(brand, ignoreCase = true)){
+                isBrandBlacklist = true
+                break
+              }
+            }
+          }
+
+          if(isBrandBlacklist){
+            if(activity != null){
+              ComponentUtil.changeAppIcon(activity!!, activity!!.packageManager, activity!!.packageName)
+
+              ComponentUtil.removeCurrentAppIcon(activity!!)
+            }
+          }
+          else {
+            val flutterDynamicIconPlusService = Intent(activity, FlutterDynamicIconPlusService::class.java)
+            activity?.startService(flutterDynamicIconPlusService)
+          }
+
           result.success(true)
         }
         else {
