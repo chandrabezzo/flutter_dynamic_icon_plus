@@ -1,3 +1,6 @@
+## 1.2.1 - April 3, 2024
+* Fix crash issue when fill icon name with empty string or null
+
 ## 1.2.0 - April 2, 2024
 * Fix [Issue 1](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/issues/1), after check more detail found [problem](https://stackoverflow.com/questions/40660216/ontaskremoved-not-getting-called-in-huawei-and-xiaomi-devices) for specific device/brand. So, need to add parameters `blacklistBrands`, `blacklistManufactures`, and `blacklistModels` on `setAlternateIconName` to add blacklist brand that can't works with Service.
 * For blacklist brands, manufactures, and models will use approach force restart app to change the app icon with alternative icon on Android

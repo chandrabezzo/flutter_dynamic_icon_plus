@@ -11,7 +11,7 @@ import android.util.Log
 
 
 object ComponentUtil {
-    fun enable(
+    private fun enable(
         context: Context,
         packageManager: PackageManager,
         componentNameString: String,
@@ -25,7 +25,7 @@ object ComponentUtil {
         )
     }
 
-    fun disable(
+    private fun disable(
         context: Context,
         packageManager: PackageManager,
         componentNameString: String,
@@ -120,7 +120,7 @@ object ComponentUtil {
         }
     }
 
-    fun getComponentNames(context: Context, activityName: String?): List<ComponentName> {
+    private fun getComponentNames(context: Context, activityName: String?): List<ComponentName> {
         val packageName = context.packageName
         if (activityName == null) {
             val pm = context.packageManager
@@ -152,8 +152,15 @@ object ComponentUtil {
         val sp = context.getSharedPreferences(FlutterDynamicIconPlusPlugin.pluginName, Context.MODE_PRIVATE)
         sp.getString(FlutterDynamicIconPlusPlugin.appIcon, null).let { name ->
             val currentlyEnabled = getCurrentEnabledAlias(context)
-            if(currentlyEnabled?.name != name){
-                setupIcon(context, packageManager, packageName, name, currentlyEnabled?.name)
+            Log.d("changeAppIcon", "Currently Enabled: $currentlyEnabled")
+            Log.d("changeAppIcon", "Will Enabled: $name")
+
+            if(name != null){
+                if(name.isNotEmpty()){
+                    if(currentlyEnabled?.name != name){
+                        setupIcon(context, packageManager, packageName, name, currentlyEnabled?.name)
+                    }
+                }
             }
         }
     }
@@ -163,7 +170,7 @@ object ComponentUtil {
         sp.edit()?.remove(FlutterDynamicIconPlusPlugin.appIcon)?.apply()
     }
 
-    fun setupIcon(context: Context, packageManager: PackageManager, packageName: String, newName: String?, currentlyName: String?){
+    private fun setupIcon(context: Context, packageManager: PackageManager, packageName: String, newName: String?, currentlyName: String?){
         val components: List<ComponentName> = getComponentNames(context, newName)
 
         for (component in components) {

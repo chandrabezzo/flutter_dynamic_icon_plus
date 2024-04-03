@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -11,6 +12,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import kotlinx.coroutines.CoroutineScope
 
 
 /** FlutterDynamicIconPlusPlugin */
@@ -42,21 +44,43 @@ class FlutterDynamicIconPlusPlugin: FlutterPlugin, MethodCallHandler, ActivityAw
           val manufacturesInString = call.argument<String?>(Arguments.manufactures)
           val modelsInString = call.argument<String?>(Arguments.models)
 
-          sp?.edit()?.putString(appIcon, iconName)?.apply()
+          Log.d("setAlternateIconName", "Icon Name: $iconName with blacklist " +
+                  "brands: $brandsInString," +
+                  "manufactures: $manufacturesInString," +
+                  "models: $modelsInString")
 
-          if(containsOnBlacklist(brandsInString, manufacturesInString, modelsInString)){
-            if(activity != null){
-              ComponentUtil.changeAppIcon(activity!!, activity!!.packageManager, activity!!.packageName)
+          val saved = sp?.edit()?.putString(appIcon, iconName)?.commit()
 
-              ComponentUtil.removeCurrentAppIcon(activity!!)
+          Log.d("setAlternateIconName", "Saved app icon status: $saved")
+
+          if(saved == true){
+            if(containsOnBlacklist(brandsInString, manufacturesInString, modelsInString)){
+              if(activity != null){
+                if(iconName != null){
+                  ComponentUtil.changeAppIcon(
+                    activity!!,
+                    activity!!.packageManager,
+                    activity!!.packageName
+                  )
+                }
+
+                ComponentUtil.removeCurrentAppIcon(activity!!)
+              }
             }
+            else {
+              val flutterDynamicIconPlusService = Intent(activity, FlutterDynamicIconPlusService::class.java)
+              activity?.startService(flutterDynamicIconPlusService)
+            }
+
+            result.success(true)
           }
           else {
-            val flutterDynamicIconPlusService = Intent(activity, FlutterDynamicIconPlusService::class.java)
-            activity?.startService(flutterDynamicIconPlusService)
+            result.error(
+              "500",
+              "Failed store $iconName to local storage",
+              "When failed store to local storage we will provide wrong value on method getAlternateIconName"
+            )
           }
-
-          result.success(true)
         }
         else {
           result.error("500", "Activity not found", "Activity didn't attached")

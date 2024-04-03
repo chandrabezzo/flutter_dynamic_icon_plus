@@ -10,6 +10,12 @@ To use this plugin, add `flutter_dynamic_icon_plus` as a [dependency in your pub
 Check out the `example` directory for a sample app using `flutter_dynamic_icon_plus`.
 
 ### Android Integration
+#### Blacklist
+Based on discussion on [stackoverflow](https://stackoverflow.com/questions/40660216/ontaskremoved-not-getting-called-in-huawei-and-xiaomi-devices) found issue when call `onTaskRemoved` on several devices. So, we add an approach to blacklist these devices via:
+- blacklistBrands
+- blacklistManufactures
+- blacklistModels
+
 #### Add Service
 
 Add service under application in your manifest
@@ -265,7 +271,12 @@ import 'package:flutter_dynamic_icon_plus/flutter_dynamic_icon_plus.dart';
 
 try {
   if (await FlutterDynamicIconPlus.supportsAlternateIcons) {
-    await FlutterDynamicIconPlus.setAlternateIconName("photos");
+    await FlutterDynamicIconPlus.setAlternateIconName(
+        iconName: "icon_name",
+        blacklistBrands: ['Redmi'],
+        blacklistManufactures: ['Xiaomi'],
+        blacklistModels: ['Redmi 200A'],
+    );
     print("App icon change successful");
     return;
   }
@@ -295,7 +306,7 @@ Method | Type | Description
 ------------ | ------------- | -------------
 **supportsAlternateIcons** | bool | To check this app support alternate app icons or not
 **alternateIconName** | String | To get currently active app icon 
-**setAlternateIconName(iconName)** | Nullable String params | To update app icon, set iconName with specific value. To restore default app icon fill with null.
+**setAlternateIconName(iconName,blacklistBrands,blacklistManufactures,blacklistModels)** | Nullable String params | To update app icon, set iconName with specific value. To restore default app icon fill with null. Fill blacklistBrands, blacklistManufactures, and/or blacklistModels to use old approach (force restart), this property just work on Android only.
 **applicationIconBadgeNumber** | int | To get app icon badge, number of push notification received. This method just work on iOS only.
 **setApplicationIconBadgeNumber(batchIconNumber)** | int params | To set app icon badge just work on iOS only.
 

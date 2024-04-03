@@ -18,7 +18,6 @@ class MyAppState extends State<MyApp> {
   int batchIconNumber = 0;
 
   String currentIconName = "?";
-  final blacklistBrands = ['redmi'];
 
   bool loading = false;
   bool showAlert = true;
@@ -161,7 +160,9 @@ class MyAppState extends State<MyApp> {
                   if (await FlutterDynamicIconPlus.supportsAlternateIcons) {
                     await FlutterDynamicIconPlus.setAlternateIconName(
                       iconName: "chills",
-                      blacklistBrands: blacklistBrands,
+                      blacklistBrands: ['Redmi'],
+                      blacklistManufactures: ['Xiaomi'],
+                      blacklistModels: ['Redmi 200A'],
                     );
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -196,7 +197,9 @@ class MyAppState extends State<MyApp> {
                   if (await FlutterDynamicIconPlus.supportsAlternateIcons) {
                     await FlutterDynamicIconPlus.setAlternateIconName(
                       iconName: 'photos',
-                      blacklistBrands: blacklistBrands,
+                      blacklistBrands: ['Redmi'],
+                      blacklistManufactures: ['Xiaomi'],
+                      blacklistModels: ['Redmi 200A'],
                     );
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -235,7 +238,9 @@ class MyAppState extends State<MyApp> {
                   if (isSupport) {
                     await FlutterDynamicIconPlus.setAlternateIconName(
                       iconName: 'teamfortress',
-                      blacklistBrands: blacklistBrands,
+                      blacklistBrands: ['Redmi'],
+                      blacklistManufactures: ['Xiaomi'],
+                      blacklistModels: ['Redmi 200A'],
                     );
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -273,7 +278,9 @@ class MyAppState extends State<MyApp> {
                   if (await FlutterDynamicIconPlus.supportsAlternateIcons) {
                     await FlutterDynamicIconPlus.setAlternateIconName(
                       iconName: null,
-                      blacklistBrands: blacklistBrands,
+                      blacklistBrands: ['Redmi'],
+                      blacklistManufactures: ['Xiaomi'],
+                      blacklistModels: ['Redmi 200A'],
                     );
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).hideCurrentSnackBar();
