@@ -5,4 +5,5 @@ class Arguments {
   static const models = 'models';
   static const enabledIconName = 'enabledIconName';
   static const batchIconNumber = 'batchIconNumber';
+  static const isSilent = 'isSilent';
 }

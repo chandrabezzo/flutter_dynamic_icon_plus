@@ -32,6 +32,7 @@ class MethodChannelFlutterDynamicIconPlus
     List<String> blacklistBrands = const [],
     List<String> blacklistManufactures = const [],
     List<String> blacklistModels = const [],
+    bool isSilent = false,
   }) async {
     final brands = blacklistBrands.join(',');
     final manufactures = blacklistManufactures.join(',');
@@ -44,6 +45,7 @@ class MethodChannelFlutterDynamicIconPlus
         Arguments.brands: brands,
         Arguments.manufactures: manufactures,
         Arguments.models: models,
+        Arguments.isSilent: isSilent,
       },
     );
   }

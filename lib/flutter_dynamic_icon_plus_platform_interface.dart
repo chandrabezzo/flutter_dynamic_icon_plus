@@ -35,6 +35,7 @@ abstract class FlutterDynamicIconPlusPlatform extends PlatformInterface {
     List<String> blacklistBrands = const [],
     List<String> blacklistManufactures = const [],
     List<String> blacklistModels = const [],
+    bool isSilent = false,
   }) =>
       throw UnimplementedError(
           'setAlternateIconName(String? iconName) has not been implemented.');
