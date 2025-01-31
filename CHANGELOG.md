@@ -1,3 +1,7 @@
+## 1.3.0 - January 31, 2025
+* [10](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/pull/10) Add Silent App Icon Change on iOS.
+* [13](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/pull/13) Support higher kotlin version.
+
 ## 1.2.1 - April 3, 2024
 * Fix crash issue when fill icon name with empty string or null
 
