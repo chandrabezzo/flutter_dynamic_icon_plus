@@ -91,7 +91,7 @@ class FlutterDynamicIconPlusPlugin: FlutterPlugin, MethodCallHandler, ActivityAw
           val packageInfo = ComponentUtil.packageInfo(activity!!)
           //By default, we have one activity (MainActivity).
           //If there is more than one activity, it indicates that we have an alternative activity
-          val isAlternateAvailable = packageInfo.activities.size > 1
+          val isAlternateAvailable = packageInfo.activities?.size ?: 0 > 1
           result.success(isAlternateAvailable)
         }
         else {

@@ -61,12 +61,14 @@ object ComponentUtil {
             val info = packageInfo(context)
 
             var enabled: ActivityInfo? = null
-            for (activityInfo in info.activities) {
-                // Only checks among the `activity-alias`s, for current enabled alias
-                if (activityInfo.targetActivity != null) {
-                    val isEnabled: Boolean =
-                        isComponentEnabled(context, packageManager, packageName, activityInfo.name)
-                    if (isEnabled) enabled = activityInfo
+            if (info.activities != null) {
+                for (activityInfo in info.activities) {
+                    // Only checks among the `activity-alias`s, for current enabled alias
+                    if (activityInfo.targetActivity != null) {
+                        val isEnabled: Boolean =
+                            isComponentEnabled(context, packageManager, packageName, activityInfo.name)
+                        if (isEnabled) enabled = activityInfo
+                    }
                 }
             }
             enabled
@@ -86,7 +88,7 @@ object ComponentUtil {
                     val packageInfo = packageInfo(context)
                     val components = ArrayList<ComponentInfo>()
                     if (packageInfo.activities != null) {
-                        components.addAll(packageInfo.activities)
+                        packageInfo.activities?.let { components.addAll(it) }
                     }
 
                     for (componentInfo in components) {
@@ -106,7 +108,7 @@ object ComponentUtil {
                 val packageInfo = packageInfo(context)
                 val components = ArrayList<ComponentInfo>()
                 if (packageInfo.activities != null) {
-                    components.addAll(packageInfo.activities)
+                    packageInfo.activities?.let { components.addAll(it) }
                 }
                 for (componentInfo in components) {
                     if (componentInfo.name == clsName) {
@@ -130,9 +132,11 @@ object ComponentUtil {
                     packageName,
                     PackageManager.GET_ACTIVITIES or PackageManager.GET_DISABLED_COMPONENTS
                 )
-                for (activityInfo in info.activities) {
-                    if (activityInfo.targetActivity == null) {
-                        components.add(ComponentName(packageName, activityInfo.name))
+                if (info.activities != null) {
+                    for (activityInfo in info.activities) {
+                        if (activityInfo.targetActivity == null) {
+                            components.add(ComponentName(packageName, activityInfo.name))
+                        }
                     }
                 }
             } catch (e: PackageManager.NameNotFoundException) {
