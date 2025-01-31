@@ -10,4 +10,5 @@ import Foundation
 class Arguments {
     static let iconName = "iconName"
     static let batchIconNumber = "batchIconNumber"
+    static let isSilent = "isSilent"
 }

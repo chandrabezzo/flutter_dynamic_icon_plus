@@ -11,17 +11,21 @@ class FlutterDynamicIconPlus {
 
   /// `blacklistBrands`, `blacklistManufactures`, `blacklistModels` just only
   /// work for Android platform only
+  /// 
+  /// `isSilent` is used to determine whether to show a native alert dialog or not. iOS only. Default is `false`
   static Future<void> setAlternateIconName({
     String? iconName,
     List<String> blacklistBrands = const [],
     List<String> blacklistManufactures = const [],
     List<String> blacklistModels = const [],
+    bool isSilent = false,
   }) async {
     await FlutterDynamicIconPlusPlatform.instance.setAlternateIconName(
       iconName: iconName,
       blacklistBrands: blacklistBrands,
       blacklistManufactures: blacklistManufactures,
       blacklistModels: blacklistModels,
+      isSilent: isSilent,
     );
   }
 
