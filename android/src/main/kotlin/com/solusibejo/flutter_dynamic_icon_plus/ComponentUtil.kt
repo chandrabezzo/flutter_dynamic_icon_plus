@@ -59,10 +59,11 @@ object ComponentUtil {
         val packageName = context.packageName
         return try {
             val info = packageInfo(context)
-
             var enabled: ActivityInfo? = null
-            if (info.activities != null) {
-                for (activityInfo in info.activities) {
+            // Store activities in a local variable to make it safe for smart cast
+            val activities = info.activities
+            if (activities != null) {
+                for (activityInfo in activities) {
                     // Only checks among the `activity-alias`s, for current enabled alias
                     if (activityInfo.targetActivity != null) {
                         val isEnabled: Boolean =
@@ -132,8 +133,10 @@ object ComponentUtil {
                     packageName,
                     PackageManager.GET_ACTIVITIES or PackageManager.GET_DISABLED_COMPONENTS
                 )
-                if (info.activities != null) {
-                    for (activityInfo in info.activities) {
+                // Store activities in a local variable to make it safe for smart cast
+                val activities = info.activities
+                if (activities != null) {
+                    for (activityInfo in activities) {
                         if (activityInfo.targetActivity == null) {
                             components.add(ComponentName(packageName, activityInfo.name))
                         }
@@ -145,11 +148,8 @@ object ComponentUtil {
             }
             return components
         }
-        val componentName = String.format("%s.%s", packageName, activityName)
-        val component = ComponentName(packageName, componentName)
-        val components = ArrayList<ComponentName>()
-        components.add(component)
-        return components
+        // If activityName is not null, return a list with single component
+        return listOf(ComponentName(packageName, activityName))
     }
 
     fun changeAppIcon(context: Context, packageManager: PackageManager, packageName: String){
