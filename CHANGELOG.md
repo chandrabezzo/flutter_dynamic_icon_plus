@@ -1,3 +1,6 @@
+## 1.3.0 - February 20, 2025
+* [16](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/pull/16) Smart Case Issue on Android.
+
 ## 1.3.0 - January 31, 2025
 * [10](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/pull/10) Add Silent App Icon Change on iOS.
 * [13](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/pull/13) Support higher kotlin version.
