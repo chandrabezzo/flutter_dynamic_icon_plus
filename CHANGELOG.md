@@ -1,4 +1,8 @@
-## 1.3.0 - February 20, 2025
+
+## 1.4.0 - October 6, 2025
+* [21](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/pull/21) Updated all related stuff for AGP 8.13.
+
+## 1.3.1 - February 20, 2025
 * [16](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/pull/16) Smart Case Issue on Android.
 
 ## 1.3.0 - January 31, 2025
