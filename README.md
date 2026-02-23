@@ -36,8 +36,13 @@ Update `android/src/main/AndroidManifest.xml` as follows:
 
 ```xml
     <application ...>
+        <!-- 
+        [android:exported="true"]
+        Required on Android 12+ for activities with intent-filters. 
+        Keeps MainActivity reachable by system intents (launcher, push, deeplink) -->
         <activity
             android:name=".MainActivity"
+            android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
@@ -53,6 +58,12 @@ Update `android/src/main/AndroidManifest.xml` as follows:
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <!-- Placeholder launcher scheme for tooling compatibility.
+                 Workaround reference: https://github.com/chandrabezzo/flutter_dynamic_icon_plus/issues/5 
+                 Keeps MainActivity detectable by flutter run without acting as a second visible launcher target.
+                 This avoids duplicate launcher targets while aliases switch icons, and keeps notification/deeplink 
+                 routing stable by using MainActivity as the single runtime entry point. -->
+                <data android:scheme="${applicationId}.placeholder" />
             </intent-filter>
         </activity>
 
@@ -60,13 +71,17 @@ Update `android/src/main/AndroidManifest.xml` as follows:
 
         <!-- FOR NOW USE "icon_1" AS ALTERNATIVE ICON NAME -->
 
+        <!--
+               Keep push/deeplink intent-filters on MainActivity only.
+               Use activity-alias entries for launcher icon switching only.
+               Default alias must be enabled -->
         <activity-alias
             android:label="Your app"
             android:icon="@mipmap/ic_launcher_1"
             android:roundIcon="@mipmap/ic_launcher_1"
             android:name=".icon_1"
             android:exported="true"
-            android:enabled="false"
+            android:enabled="true"
             android:targetActivity=".MainActivity">
 
             <meta-data
