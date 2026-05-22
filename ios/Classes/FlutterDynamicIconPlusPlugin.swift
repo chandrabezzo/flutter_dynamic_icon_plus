@@ -42,7 +42,7 @@ public class FlutterDynamicIconPlusPlugin: NSObject, FlutterPlugin {
                         self.setIconWithAlert(iconName as? String, result: result)
                     }
                 } catch: { (exception) in
-                    let errorReason = exception?.reason ?? "Unknown Error setAlternateIconName"
+                    let errorReason = exception.reason ?? "Unknown Error setAlternateIconName"
                     print("\(errorReason)")
                     result(
                         FlutterError(
@@ -74,7 +74,7 @@ public class FlutterDynamicIconPlusPlugin: NSObject, FlutterPlugin {
                                 UIApplication.shared.applicationIconBadgeNumber = batchIconNumber
                                 result(nil)
                             } catch: { (exception) in
-                                let errorReason = exception?.reason ?? "Unknown Error setApplicationIconBadgNumber"
+                                let errorReason = exception.reason ?? "Unknown Error setApplicationIconBadgNumber"
                                 print("\(errorReason)")
                                 result(
                                     FlutterError(
@@ -94,7 +94,7 @@ public class FlutterDynamicIconPlusPlugin: NSObject, FlutterPlugin {
                                     result(nil)
                                 }
                             } catch: { (exception) in
-                                let errorReason = exception?.reason ?? "Unknown Error setApplicationIconBadgeNumber"
+                                let errorReason = exception.reason ?? "Unknown Error setApplicationIconBadgeNumber"
                                 print("\(errorReason)")
                                 result(
                                     FlutterError(
@@ -124,7 +124,7 @@ public class FlutterDynamicIconPlusPlugin: NSObject, FlutterPlugin {
                     UIApplication.shared.applicationIconBadgeNumber = batchIconNumber
                     result(nil)
                 } catch: { (exception) in
-                    let errorReason = exception?.reason ?? "Unknown Error setApplicationIconBadgeNumber"
+                    let errorReason = exception.reason ?? "Unknown Error setApplicationIconBadgeNumber"
                     print(errorReason)
                     result(
                         FlutterError(
