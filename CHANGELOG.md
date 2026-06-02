@@ -1,4 +1,6 @@
-
+## 1.4.1 - June 2, 2026
+* [26](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/pull/26) Remove SwiftTryCatch
+  
 ## 1.4.0 - October 6, 2025
 * [21](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/pull/21) Updated all related stuff for AGP 8.13.
 
