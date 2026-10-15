@@ -10,18 +10,14 @@ class FlutterDynamicIconPlusService: Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_NOT_STICKY
 
     override fun onTaskRemoved(rootIntent: Intent?) {
-        ComponentUtil.changeAppIcon(this, packageManager, packageName)
-
-        ComponentUtil.removeCurrentAppIcon(this)
+        ComponentUtil.applyPendingIcon(this)
 
         super.onTaskRemoved(rootIntent)
         stopSelf()
     }
 
     override fun onDestroy() {
-        ComponentUtil.changeAppIcon(this, packageManager, packageName)
-
-        ComponentUtil.removeCurrentAppIcon(this)
+        ComponentUtil.applyPendingIcon(this)
 
         super.onDestroy()
         stopSelf()

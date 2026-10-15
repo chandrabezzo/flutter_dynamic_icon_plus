@@ -25,11 +25,21 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+            <!-- No LAUNCHER intent-filter here: every launcher icon, including the default one,
+                 is an activity-alias so MainActivity itself is never disabled. -->
+        </activity>
+
+        <activity-alias
+            android:name=".DEFAULT"
+            android:targetActivity=".MainActivity"
+            android:exported="true"
+            android:enabled="true"
+            android:icon="@mipmap/ic_launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
+        </activity-alias>
 
         <activity-alias
             android:name=".chills"

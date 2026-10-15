@@ -1,3 +1,13 @@
+## 1.6.0 - October 16, 2026
+* **Android:** never disable `MainActivity` or other real activities when switching icons. Only activity-aliases are toggled. Fixes the app not opening after an icon change [7](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/issues/7), crashes when launching from Android Studio [11](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/issues/11) and push notifications not opening the app [5](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/issues/5). An activity left disabled by older versions is re-enabled on the next icon change.
+* **Android:** `setAlternateIconName(iconName: null)` restores the default icon again [8](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/issues/8).
+* **Android:** icon names are matched against the declared aliases, so `icon_1`, `.icon_1` and the fully qualified name all work, also with `applicationIdSuffix`. Previously a bare name crashed the service with "Component class ... does not exist" [12](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/issues/12).
+* **Android:** `supportsAlternateIcons` only counts activity-aliases, not activities added by other plugins.
+* Replace the leftover template unit test that broke `gradlew test` builds [19](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/issues/19).
+* Example builds with current Flutter (Gradle 8.14.3, Kotlin 2.2.20) and uses the `.DEFAULT` alias setup.
+* README: `.DEFAULT` alias migration, when the Android icon changes [4](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/issues/4), and iOS troubleshooting for blank icons [25](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/issues/25) [18](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/issues/18).
+* **Migration:** move the MAIN/LAUNCHER intent-filter from `MainActivity` to a `.DEFAULT` activity-alias (see README). Otherwise the default icon stays visible next to the alternative one.
+
 ## 1.5.0 - October 16, 2026
 * Fix Swift Package Manager support: move iOS sources to `ios/flutter_dynamic_icon_plus/Sources/`, add `Package.swift` with the `FlutterFramework` dependency, and remove the root-level `Package.swift` from [30](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/pull/30).
 * Restore the CocoaPods podspec so projects not yet on Swift Package Manager keep building.
