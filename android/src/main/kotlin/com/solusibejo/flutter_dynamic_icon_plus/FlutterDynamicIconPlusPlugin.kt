@@ -49,23 +49,14 @@ class FlutterDynamicIconPlusPlugin: FlutterPlugin, MethodCallHandler, ActivityAw
                   "manufactures: $manufacturesInString," +
                   "models: $modelsInString")
 
-          val saved = sp?.edit()?.putString(appIcon, iconName)?.commit()
+          // Empty string means "restore default icon"; storing null would remove the key and do nothing.
+          val saved = sp?.edit()?.putString(appIcon, iconName ?: "")?.commit()
 
           Log.d("setAlternateIconName", "Saved app icon status: $saved")
 
           if(saved == true){
             if(containsOnBlacklist(brandsInString, manufacturesInString, modelsInString)){
-              if(activity != null){
-                if(iconName != null){
-                  ComponentUtil.changeAppIcon(
-                    activity!!,
-                    activity!!.packageManager,
-                    activity!!.packageName
-                  )
-                }
-
-                ComponentUtil.removeCurrentAppIcon(activity!!)
-              }
+              ComponentUtil.applyPendingIcon(activity!!)
             }
             else {
               val flutterDynamicIconPlusService = Intent(activity, FlutterDynamicIconPlusService::class.java)
@@ -88,11 +79,8 @@ class FlutterDynamicIconPlusPlugin: FlutterPlugin, MethodCallHandler, ActivityAw
       }
       MethodNames.supportsAlternateIcons -> {
         if(activity != null){
-          val packageInfo = ComponentUtil.packageInfo(activity!!)
-          //By default, we have one activity (MainActivity).
-          //If there is more than one activity, it indicates that we have an alternative activity
-          val isAlternateAvailable = packageInfo.activities?.size ?: 0 > 1
-          result.success(isAlternateAvailable)
+          // Other plugins add activities too, so only activity-aliases count as alternate icons
+          result.success(ComponentUtil.aliases(activity!!).isNotEmpty())
         }
         else {
           result.success(false)

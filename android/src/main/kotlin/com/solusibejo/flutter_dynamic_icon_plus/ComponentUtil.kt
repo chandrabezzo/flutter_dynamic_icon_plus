@@ -11,33 +11,8 @@ import android.util.Log
 
 
 object ComponentUtil {
-    private fun enable(
-        context: Context,
-        packageManager: PackageManager,
-        componentNameString: String,
-    ) {
-        val componentName = ComponentName(context, componentNameString)
-
-        packageManager.setComponentEnabledSetting(
-            componentName,
-            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-            PackageManager.DONT_KILL_APP
-        )
-    }
-
-    private fun disable(
-        context: Context,
-        packageManager: PackageManager,
-        componentNameString: String,
-    ) {
-        val componentName = ComponentName(context, componentNameString)
-
-        packageManager.setComponentEnabledSetting(
-            componentName,
-            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-            PackageManager.DONT_KILL_APP
-        )
-    }
+    /** Name of the optional activity-alias that holds the default icon. */
+    private const val defaultAliasName = "DEFAULT"
 
     fun packageInfo(context: Context): PackageInfo {
         val packageManager = context.packageManager
@@ -52,6 +27,20 @@ object ComponentUtil {
                 component
             )
         }
+    }
+
+    /** All `activity-alias` entries declared in the merged manifest, enabled or not. */
+    fun aliases(context: Context): List<ActivityInfo> =
+        packageInfo(context).activities?.filter { it.targetActivity != null } ?: emptyList()
+
+    /**
+     * Matches [name] against the declared alias names. Accepts the fully qualified name
+     * (`com.example.app.icon_1`), the manifest form (`.icon_1`) or the bare name (`icon_1`).
+     */
+    fun findAlias(aliasNames: List<String>, name: String): String? {
+        val simpleName = name.removePrefix(".")
+        if (simpleName.isEmpty()) return null
+        return aliasNames.firstOrNull { it == name || it.endsWith(".$simpleName") }
     }
 
     fun getCurrentEnabledAlias(context: Context): ActivityInfo? {
@@ -123,82 +112,46 @@ object ComponentUtil {
         }
     }
 
-    private fun getComponentNames(context: Context, activityName: String?): List<ComponentName> {
-        val packageName = context.packageName
-        if (activityName == null) {
-            val pm = context.packageManager
-            val components = ArrayList<ComponentName>()
-            try {
-                val info = pm.getPackageInfo(
-                    packageName,
-                    PackageManager.GET_ACTIVITIES or PackageManager.GET_DISABLED_COMPONENTS
-                )
-                // Store activities in a local variable to make it safe for smart cast
-                val activities = info.activities
-                if (activities != null) {
-                    for (activityInfo in activities) {
-                        if (activityInfo.targetActivity == null) {
-                            components.add(ComponentName(packageName, activityInfo.name))
-                        }
-                    }
-                }
-            } catch (e: PackageManager.NameNotFoundException) {
-                // the package isn't installed on the device
-                Log.d("getComponentNames", "the package isn't installed on the device")
-            }
-            return components
-        }
-        // If activityName is not null, return a list with single component
-        return listOf(ComponentName(packageName, activityName))
+    private fun setState(context: Context, className: String, state: Int) {
+        context.packageManager.setComponentEnabledSetting(
+            ComponentName(context.packageName, className),
+            state,
+            PackageManager.DONT_KILL_APP
+        )
     }
 
-    fun changeAppIcon(context: Context, packageManager: PackageManager, packageName: String){
+    /**
+     * Applies the icon stored by `setAlternateIconName`, then clears it.
+     * An empty stored value means "restore the default icon".
+     *
+     * Only activity-aliases are ever disabled. Real activities (MainActivity, or activities
+     * added by other plugins) must stay enabled, otherwise aliases pointing at them, deep links
+     * and notification intents stop working.
+     */
+    fun applyPendingIcon(context: Context) {
         val sp = context.getSharedPreferences(FlutterDynamicIconPlusPlugin.pluginName, Context.MODE_PRIVATE)
-        sp.getString(FlutterDynamicIconPlusPlugin.appIcon, null).let { name ->
-            val currentlyEnabled = getCurrentEnabledAlias(context)
-            Log.d("changeAppIcon", "Currently Enabled: $currentlyEnabled")
-            Log.d("changeAppIcon", "Will Enabled: $name")
+        if (!sp.contains(FlutterDynamicIconPlusPlugin.appIcon)) return
 
-            if(name != null){
-                if(name.isNotEmpty()){
-                    if(currentlyEnabled?.name != name){
-                        setupIcon(context, packageManager, packageName, name, currentlyEnabled?.name)
-                    }
-                }
-            }
-        }
-    }
+        val name = sp.getString(FlutterDynamicIconPlusPlugin.appIcon, null).orEmpty()
+        sp.edit().remove(FlutterDynamicIconPlusPlugin.appIcon).apply()
 
-    fun removeCurrentAppIcon(context: Context){
-        val sp = context.getSharedPreferences(FlutterDynamicIconPlusPlugin.pluginName, Context.MODE_PRIVATE)
-        sp.edit()?.remove(FlutterDynamicIconPlusPlugin.appIcon)?.apply()
-    }
+        val aliases = aliases(context)
+        val aliasNames = aliases.map { it.name }
 
-    private fun setupIcon(context: Context, packageManager: PackageManager, packageName: String, newName: String?, currentlyName: String?){
-        val components: List<ComponentName> = getComponentNames(context, newName)
-
-        for (component in components) {
-            if (currentlyName != null && currentlyName == component.className) return
-            Log.d(
-                "setAlternateIconName",
-                String.format(
-                    "Changing enabled activity-alias from %s to %s",
-                    currentlyName ?: "default", component.className
-                )
-            )
-            enable(context, packageManager, component.className)
+        // Versions <= 1.5.0 disabled the alias target (MainActivity), which makes every alias
+        // unlaunchable. Put it back to its manifest state.
+        aliases.mapNotNull { it.targetActivity }.distinct().forEach {
+            setState(context, it, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT)
         }
 
-        val componentsToDisable: List<ComponentName> = if (currentlyName != null) {
-            listOf(
-                ComponentName(packageName, currentlyName)
-            )
-        } else {
-            getComponentNames(context, null)
-        }
+        // Unknown names (e.g. "MainActivity") fall back to the default icon.
+        val target = findAlias(aliasNames, name) ?: findAlias(aliasNames, defaultAliasName)
+        Log.d("applyPendingIcon", "Requested '$name', enabling ${target ?: "MainActivity (no .DEFAULT alias)"}")
 
-        for (toDisable in componentsToDisable) {
-            disable(context, packageManager, toDisable.className)
+        // Enable the new entry before disabling the others so the app always has a launcher entry.
+        target?.let { setState(context, it, PackageManager.COMPONENT_ENABLED_STATE_ENABLED) }
+        aliasNames.filter { it != target }.forEach {
+            setState(context, it, PackageManager.COMPONENT_ENABLED_STATE_DISABLED)
         }
     }
 }

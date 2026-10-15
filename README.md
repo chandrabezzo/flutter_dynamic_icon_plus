@@ -1,6 +1,6 @@
 # flutter_dynamic_icon_plus
 
-A flutter plugin for dynamically changing app icon and app icon batch number (iOS only) in the mobile platform. Supports **iOS >= 10.3**.
+A flutter plugin for dynamically changing app icon and app icon batch number (iOS only) in the mobile platform. Supports **iOS >= 13.0**.
 
 ## Installation
 
@@ -52,15 +52,32 @@ Update `android/src/main/AndroidManifest.xml` as follows:
                 android:resource="@style/NormalTheme"
                 />
 
+            <!-- Do NOT put the MAIN/LAUNCHER intent-filter here. Move it to the ".DEFAULT" alias below. -->
+        </activity>
+
+        <!-- Every launcher icon is an activity-alias. The default one must be named ".DEFAULT" and enabled; the others disabled. -->
+        <activity-alias
+            android:label="Your app"
+            android:icon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher"
+            android:name=".DEFAULT"
+            android:exported="true"
+            android:enabled="true"
+            android:targetActivity=".MainActivity">
+
+            <meta-data
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme"
+                />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
 
-        <!-- The activity-alias are your alternatives icons and name of your app, the default one must be enabled (and the others disabled) and the name must be ".DEFAULT". All the names of your activity-alias' name must begin with a dot. -->
+        </activity-alias>
 
-        <!-- FOR NOW USE "icon_1" AS ALTERNATIVE ICON NAME -->
+        <!-- Alternative icons. Pass "icon_1" (or ".icon_1") as iconName. -->
 
         <activity-alias
             android:label="Your app"
@@ -108,7 +125,7 @@ Update `android/src/main/AndroidManifest.xml` as follows:
     
 #### Include applicationIdSuffix
 
-If your app contains applicationIdSuffix please add applicationId on your activity-alias name for example
+Since 1.6.0 the plugin resolves `.icon_1` correctly with an `applicationIdSuffix`, so this is optional. Prefixing the alias name with `${applicationId}` still works, for example
 
 ```xml
 	<activity-alias
@@ -133,6 +150,18 @@ If your app contains applicationIdSuffix please add applicationId on your activi
         </activity-alias>
 
 ```
+
+#### Why `.DEFAULT` instead of a LAUNCHER filter on MainActivity?
+
+The plugin switches icons by enabling one activity-alias and disabling the others. It never disables `MainActivity`, because aliases, deep links, push notifications and `flutter run` / Android Studio all start it directly. If `MainActivity` keeps its own LAUNCHER filter, its icon stays visible next to the alternative one, so you get two icons.
+
+Upgrading from 1.5.0 or older: move the LAUNCHER intent-filter from `MainActivity` to a new `.DEFAULT` alias as shown above. Versions up to 1.5.0 could disable `MainActivity` itself, which made the app impossible to open from notifications or Android Studio; the next icon change re-enables it.
+
+#### When does the icon change?
+
+Unless the device matches the blacklist, the icon changes when the app is closed (removed from recents), not immediately. Changing a launcher entry while the app is in the foreground makes many launchers kill the app, so the plugin waits for the user to leave it. Tell your users the new icon appears after they close the app. The blacklist parameters apply the change immediately instead, which may close the app.
+
+To restore the default icon pass `iconName: null`. It enables the `.DEFAULT` alias, or, if you have none, disables all aliases.
 
 #### Known Issues
 
@@ -263,6 +292,15 @@ Here is my `Info.plist` after adding Alternate Icons
 ```
 
 Now, you can call `FlutterDynamicIconPlus.setAlternateIconName` with the `CFBundleAlternateIcons` key as the argument to set that icon.
+
+#### Alternative: asset catalog (Xcode 13+)
+
+Instead of loose PNG files and a hand-written `CFBundleAlternateIcons`, you can add each alternate icon as an App Icon set in `Assets.xcassets` (one 1024x1024 PNG is enough), then set **Build Settings > Alternate App Icon Sets** (`ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES`) to the set names, for example `chills photos teamfortress`. Xcode generates the `Info.plist` entries for you. Pass the set name as `iconName`.
+
+#### Troubleshooting
+
+* **The icon shows as a blank white grid.** iOS could not find the image. Check that the files are in **Build Phases > Copy Bundle Resources** of the `Runner` target, and that `CFBundleIconFiles` contains the base name only (`teamfortress`, not `teamfortress@2x.png`). If it still fails, use the asset catalog approach above. Icons must be PNG without an alpha channel, and asset set names must not start with `_`.
+* **It works in the example but not in my app.** The icon files and `CFBundleIcons` entries live in your app's `Runner` target, not in the plugin. Copy them into your own project instead of copying the example's `ios` folder, and make sure the `Info.plist` you edit is the one used by your build configuration and flavor.
 
 ### Dart/Flutter Integration
 
