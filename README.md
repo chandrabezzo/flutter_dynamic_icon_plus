@@ -4,14 +4,9 @@ A flutter plugin for dynamically changing app icon and app icon batch number (iO
 
 ## Installation
 
-This repository now provides native iOS/macOS sources via Swift Package Manager (SPM). The CocoaPods podspec has been removed — please use SPM for Xcode integration.
+Add `flutter_dynamic_icon_plus` as a [dependency in your pubspec.yaml file](https://flutter.dev/platform-plugins/).
 
-- Flutter (Dart/pub): continue to add `flutter_dynamic_icon_plus` as a dependency in your `pubspec.yaml`.
-
-- iOS / macOS (Swift Package Manager):
-  1. In Xcode choose File → Add Packages...
-  2. Enter this repository URL and select the desired version, branch, or commit.
-  3. Add the package product `flutter_dynamic_icon_plus` to your app target.
+On iOS the plugin supports both Swift Package Manager and CocoaPods. Flutter picks the integration automatically; no manual Xcode setup is needed.
 
 ## Getting Started
 Check out the `example` directory for a sample app using `flutter_dynamic_icon_plus`.

@@ -1,3 +1,8 @@
+## 1.5.0 - October 16, 2026
+* Fix Swift Package Manager support: move iOS sources to `ios/flutter_dynamic_icon_plus/Sources/`, add `Package.swift` with the `FlutterFramework` dependency, and remove the root-level `Package.swift` from [30](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/pull/30).
+* Restore the CocoaPods podspec so projects not yet on Swift Package Manager keep building.
+* **Breaking:** minimum iOS version raised to 13.0.
+
 ## 1.4.1 - June 2, 2026
 * [26](https://github.com/chandrabezzo/flutter_dynamic_icon_plus/pull/26) Remove SwiftTryCatch
   
